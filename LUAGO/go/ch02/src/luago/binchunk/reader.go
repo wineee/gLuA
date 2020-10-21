@@ -15,7 +15,16 @@ func (self *reader) readByte() byte {
 	return b
 }
 
+// 读取n个字节
+func (self *reader) readBytes(n uint) []byte {
+	bytes := self.data[:n]
+	self.data = self.data[n:]
+	return bytes
+}
+
 // 读一个cint,占4字节
+/* Little Endian: 按照从低地址到高地址的顺序存放数据的低位字节到高位字节，就是低位数字在前面.0x22334455如果按照小字端（Little Endian）的形式存储，那么它的字节值存储顺序为0x55、0x44、0x33、0x22
+*/
 func (self *reader) readUint32() uint32 {
 	i := binary.LittleEndian.Uint32(self.data) // 小端方式
 	self.data = self.data[4:]
@@ -50,13 +59,6 @@ func (self *reader) readString() string {
 	}
 	bytes := self.readBytes(size-1)
 	return string(bytes)
-}
-
-// 读取n个字节
-func (self *reader) readBytes(n uint) []byte {
-	bytes := self.data[:n]
-	self.data = self.data[n:]
-	return bytes
 }
 
 // 检查头部
@@ -106,9 +108,9 @@ func (self *reader) readProto(parentSource string) *Prototype {
 			UpvalueNames: self.readUpvalueNames(),
 		}
 }
-	
+
 // 读指令表 
-func (self *reader) readCode() []int32 {
+func (self *reader) readCode() []uint32 {
 	code := make([]uint32, self.readUint32())
 	for i := range code {
 		code[i] = self.readUint32()
@@ -124,7 +126,6 @@ func (self *reader) readConstants() []interface{} {
 	}
 	return constants
 }
-
 
 // 读取一个常量
 func (self *reader) readConstant() interface{} {
@@ -160,7 +161,6 @@ func (self *reader) readProtos(parentSource string) []*Prototype {
 	return protos
 }
 
-
 // 读取行号表
 func (self *reader) readLineInfo() []uint32 {
 	lineInfo := make([]uint32, self.readUint32())
@@ -174,7 +174,7 @@ func (self *reader) readLineInfo() []uint32 {
 func (self *reader) readLocVars() []LocVar {
 	locVars := make([]LocVar, self.readUint32())
 	for i := range locVars {
-		locVars[i] = locVar {
+		locVars[i] = LocVar {
 			    VarName: self.readString(),
 				StartPC: self.readUint32(),
 				EndPC: self.readUint32(),
@@ -183,11 +183,10 @@ func (self *reader) readLocVars() []LocVar {
 	return locVars
 }
 
-
 // 读取Upvalue名列表
 func (self *reader) readUpvalueNames() []string {
 	names := make([]string, self.readUint32())
-	for i := range name {
+	for i := range names {
 		names[i] = self.readString()
 	}
 	return names

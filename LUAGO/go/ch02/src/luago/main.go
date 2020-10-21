@@ -36,14 +36,16 @@ func printHeader(f *binchunk.Prototype) {
 	if f.IsVararg > 0 {
 		varargFlag = "+"
 	}
-	fmt.Printf("%d%s params, %d slots, %d upvalues, ", \
+	fmt.Printf("\n%s <%s:%d,%d> (%d instructions\n)",
+        funcType, f.Source, f.LineDefined, f.LastLineDefined, len(f.Code))
+	fmt.Printf("%d%s params, %d slots, %d upvalues, ",
 		f.NumParams, varargFlag, f.MaxStackSize, len(f.Upvalues))
-	fmt.Printf("%d locals, %d constants, %d function\n",\
-	    len(f.locVars), len(f.Constants), len(f.Protos))
+	fmt.Printf("%d locals, %d constants, %d function\n",
+	    len(f.LocVars), len(f.Constants), len(f.Protos))
 }
 
 // 打印指令的序号，行号，十六进制表示
-func printCode(f *binaryChunk.Prototype) {
+func printCode(f *binchunk.Prototype) {
 	for pc,c := range f.Code {
 		line := "-"
 		if len(f.LineInfo) > 0 {
@@ -53,273 +55,6 @@ func printCode(f *binaryChunk.Prototype) {
 	} 
 }
 
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
-func printDetail(f *binchunk.Prototype) {
-	fmt.Printf("constants(%d):\n", len(f.Constants))
-	for i,k := range f.Constants {
-		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
-	}
-	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
-		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
-	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
-			i, upvalName(f,i), upval.Instack, upval.Idx)
-	}
-}
-
 // 打印常量表，局部变量表，Upvalue表
 func printDetail(f *binchunk.Prototype) {
 	fmt.Printf("constants(%d):\n", len(f.Constants))
@@ -327,18 +62,18 @@ func printDetail(f *binchunk.Prototype) {
 		fmt.Printf("\t%d\t%s\n", i+1, constantToString(k))
 	}
 	for i, locVar := range f.LocVars {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n", \
+		fmt.Printf("\t%d\t%s\t%d\t%d\n",
 		    i, locVar.VarName, locVar.StartPC+1, locVar.EndPC+1)
 	}
-	fmt.Printf("upvalues (%d):\n", len(f.upvalues))
-	for i, upvalues := range f.upvalues {
-		fmt.Printf("\t%d\t%s\t%d\t%d\n",\
+	fmt.Printf("upvalues (%d):\n", len(f.Upvalues))
+	for i, upval := range f.Upvalues {
+		fmt.Printf("\t%d\t%s\t%d\t%d\n",
 			i, upvalName(f,i), upval.Instack, upval.Idx)
 	}
 }
 
 // 把常量表里的常量转化成字符串
-func constantToString(k int erface{}) string {
+func constantToString(k interface{}) string {
 	switch k.(type) {
 	case nil: return "nil"
 	case bool: return fmt.Sprintf("%t", k)
