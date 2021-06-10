@@ -1,5 +1,6 @@
 package binchunk
 
+// 魔数
 const (
 	LUA_SIGNATURE    = "\x1bLua"
 	LUAC_VERSION     = 0x53
@@ -14,6 +15,7 @@ const (
 	LUAC_NUM         = 370.5
 )
 
+// 常量表, 每个常量都以1字节tag开头
 const (
 	TAG_NIL       = 0x00
 	TAG_BOOLEAN   = 0x01
@@ -43,20 +45,31 @@ type header struct {
 	luacNum         float64
 }
 
+// 函数原型主要包含函数基本信息、指令表、常量表、upvalue表、子函数原型表以及调试信息
 type Prototype struct {
 	Source          string
+	// 源文件名,只有在主函数原型里,该字段才真正有值
 	LineDefined     uint32
 	LastLineDefined uint32
+	// 起止行号,如果是普通的函数,起止行号都应该大于0；如果是主函数，则起止行号都是0
 	NumParams       byte
-	IsVararg        byte
-	MaxStackSize    byte //寄存器数量
-	Code           []uint32 //指令表
-	Constants      []interface{} //常量表
-	Upvalues       []Upvalue  
+	// 固定参数个数,这里的固定参数,是相对于变长参数（Vararg）而言的
+	IsVararg        byte // 是否是vararg函数
+	MaxStackSize    byte
+	// 运行函数所必要的寄存器数量, Lua虚拟机在执行函数时，真正使用的其实是一种栈结构，这种栈结构除了可以进行常规地推入和弹出操作以外，还可以按索引访问，所以可以用来模拟寄存器。
+	Code           []uint32
+	// 指令表,每条指令占4个字节
+	Constants      []interface{}
+	// 常量表,用于存放Lua代码里出现的字面量，包括nil、布尔值、整数、浮点数和字符串五种
+	Upvalues       []Upvalue
+	// 该表的每个元素占用2个字节
 	Protos         []*Prototype //子函数原型表
-	LineInfo       []uint32 //行号表
-	LocVars        []LocVar //局部变量表	
+	LineInfo       []uint32
+	// 行号表,行号表中的行号和指令表中的指令一一对应，分别记录每条指令在源代码中对应的行号
+	LocVars        []LocVar
+	// 局部变量表，用于记录局部变量名，表中每个元素都包含变量名（按字符串类型存储）和起止指令索引（按cint类型存储）
 	UpvalueNames   []string
+	// upvalue名列表,该列表中的元素和前面Upvalue表中的元素一一对应
 }
 
 type Upvalue struct {
@@ -70,9 +83,10 @@ type LocVar struct {
 	EndPC   uint32
 }
 
+// 用于解析二进制chunk
 func Undump(data []byte) *Prototype {
 	reader := &reader{data}
-	reader.checkHeader()
-	reader.readByte() //skip the size of Upvalue
-	return reader.readProto("") 
+	reader.checkHeader() // 检验头部
+	reader.readByte() // skip the size of Upvalue
+	return reader.readProto("")  // 读取原型
 }

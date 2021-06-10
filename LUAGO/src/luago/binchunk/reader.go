@@ -5,7 +5,7 @@ import "math"
 
 // 进行二进制chunk解析
 type reader struct {
-	data []byte  // 存放chunk数据
+	data []byte  // 存放将要被解析的二进制chunk数据
 }	
 
 // 读一个字节
@@ -61,27 +61,39 @@ func (self *reader) readString() string {
 	return string(bytes)
 }
 
-// 检查头部
+// 检查头部, checkHeader()方法从字节流里读取并检查二进制chunk头部的各个字段，如果发现某个字段和期望不符，则调用panic函数终止加载
 func (self *reader) checkHeader() {
 	if string(self.readBytes(4)) != LUA_SIGNATURE {
 		panic("not a precompiled chunk!")
-	} else if self.readByte() != LUAC_VERSION {
+	}
+	if self.readByte() != LUAC_VERSION {
 		panic("version mism atch! ")
-	} else if self.readByte() != LUAC_FORMAT {
+	}
+	if self.readByte() != LUAC_FORMAT {
 		panic("format mismatch!")
-	} else if string(self.readBytes(6)) != LUAC_DATA {
+	}
+	if string(self.readBytes(6)) != LUAC_DATA {
 		panic("corrupted!")
-	} else if self.readByte() != CINT_SIZE {
+	}
+	if self.readByte() != CINT_SIZE {
 		panic("int size mismatch!")
-	} else if self.readByte() != CSZIET_SIZE {
+	}
+	if self.readByte() != CSZIET_SIZE {
 		panic("size_t size mismatch!")
-	} else if self.readByte() != LUA_INTEGER_SIZE {
+	}
+	if self.readByte() != INSTRUCTION_SIZE {
+		panic("instruction size mismatch!")
+	}
+	if self.readByte() != LUA_INTEGER_SIZE {
 		panic("lua_Integer size mismatch!")
-	} else if self.readByte() != LUA_NUMBER_SIZE {
+	}
+	if self.readByte() != LUA_NUMBER_SIZE {
 		panic("lua_Number size mismatch!")
-	} else if self.readLuaInteger() != LUAC_INT {
+	}
+	if self.readLuaInteger() != LUAC_INT {
 		panic("endianness mismatch!")
-	} else if self.readLuaNumber() != LUAC_NUM {
+	}
+	if self.readLuaNumber() != LUAC_NUM {
 		panic("float format mismatch!")
 	}
 }
@@ -90,10 +102,11 @@ func (self *reader) checkHeader() {
 func (self *reader) readProto(parentSource string) *Prototype {
 	source := self.readString()
 	if source == "" {
+		// Lua编译器只给主函数设置了源文件名以减少冗余数据，所以子函数原型需要从自己的父函数原型那里获取源文件名
 		source = parentSource
 	}
 	return &Prototype {
-		    Source:source,
+		  Source:source,
 			LineDefined: self.readUint32(),
 			LastLineDefined: self.readUint32(),
 			NumParams: self.readByte(),
@@ -174,8 +187,8 @@ func (self *reader) readLineInfo() []uint32 {
 func (self *reader) readLocVars() []LocVar {
 	locVars := make([]LocVar, self.readUint32())
 	for i := range locVars {
-		locVars[i] = LocVar {
-			    VarName: self.readString(),
+		locVars[i] = LocVar{
+			  VarName: self.readString(),
 				StartPC: self.readUint32(),
 				EndPC: self.readUint32(),
 			}
