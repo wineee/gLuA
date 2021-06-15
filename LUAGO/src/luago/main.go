@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"luago/binchunk"
+	. "luago/vm"
 	"os"
 )
 
@@ -53,7 +54,51 @@ func printCode(f *binchunk.Prototype) {
 		if len(f.LineInfo) > 0 {
 			line = fmt.Sprintf("%d", f.LineInfo[pc])
 		}
-		fmt.Printf("\t%d\t[%s]\t0x%08X\n", pc+1, line, c)
+		i := Instruction(c)
+		fmt.Printf("\t%d\t[%s]\t%s", pc+1, line, i.OpName())
+		printOperands(i)
+		fmt.Printf("\n")
+	}
+}
+
+func printOperands(i Instruction) {
+	switch i.OpMode() {
+	case IABC:
+		a, b, c := i.ABC()
+		fmt.Printf("%d", a)
+		if i.BMode() != OpArgN {
+			if b > 0xFF {
+				// 如果操作数B或C的最高位是1就认为它表示常量表索引，按负数输出
+				fmt.Printf(" %d", -1-b&0xFF)
+			} else {
+				fmt.Printf(" %d", b)
+			}
+		}
+		if i.CMode() != OpArgN {
+			if c > 0xFF {
+				fmt.Printf(" %d", -1-c&0xFF)
+			} else {
+				fmt.Printf(" %d", c)
+			}
+		}
+		
+	case IABx:
+		a, bx := i.ABx()
+		fmt.Printf("%d", a)
+		if i.BMode() == OpArgK {
+			fmt.Printf(" %d", -1-bx)
+		} else if i.BMode() == OpArgU {
+			fmt.Printf(" %d", bx)
+		}
+		
+	case IAsBx:
+		a, sbx := i.AsBx()
+		fmt.Printf("%d %d", a, sbx)
+		
+	case IAx:
+		ax := i.Ax()
+		fmt.Printf("%d", -1-ax)
+		
 	}
 }
 
