@@ -1,0 +1,13 @@
+package api
+
+const (
+	LUA_TNONE = iota -1 // 无效索引
+	LUA_TNIL
+	LUA_TBOOLEAN
+	LUA_TLIGHTUSERDATA // 暂时忽略用户数据
+	LUA_TNUMBER
+	LUA_TSTRING
+	LUA_TTABLE
+	LUA_TFUNCTION
+	LUA_TTHREAD
+)
