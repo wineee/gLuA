@@ -96,7 +96,8 @@ func (self *luaState) ToInteger(idx int) int64 {
 
 func (self *luaState) ToIntegerX(idx int) (int64, bool) {
 	val := self.stack.get(idx)
-	i, ok := val.(int64)
+	// i, ok := val.(int64)
+	i, ok := convertToInteger(val)
 	return i, ok
 }
 
@@ -108,14 +109,7 @@ func (self *luaState) ToNumber(idx int) float64 {
 func (self *luaState) ToNumberX(idx int) (float64, bool) {
 	val := self.stack.get(idx)
 	// https://blog.csdn.net/nevergk/article/details/79174733
-	switch x := val.(type) {
-	case float64:
-		return x, true
-	case int64:
-		return float64(x), true
-	default:
-		return 0, false
-	}
+	return convertToFloat(val)
 }
 
 // 如果值是字符串，则返回该字符串。如果值是数字，则将值转换为字符串（注意会修改栈），然后返回字符串。否则，返回空字符串
